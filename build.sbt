@@ -37,6 +37,9 @@ libraryDependencies += "org.apache.commons" % "commons-math3" % "3.6.1"
 // https://mvnrepository.com/artifact/commons-codec/commons-codec
 libraryDependencies += "commons-codec" % "commons-codec" % "1.11"
 
+//https://mvnrepository.com/artifact/org.yaml/snakeyaml/1.26
+libraryDependencies += "org.yaml" % "snakeyaml" % "1.26"
+
 // https://mvnrepository.com/artifact/org.jgrapht/jgrapht-core
 libraryDependencies += "org.jgrapht" % "jgrapht-core" % "0.9.0"//% "1.0.1"
 
