@@ -12,6 +12,9 @@ object ERJobLauncher {
   val log = LoggerFactory.getLogger(getClass.getName)
 
   def main(args: Array[String]): Unit = {
+    log.info("start to run er job")
+    println("run er job now")
 
+    log.info("er job is completed")
   }
 }
