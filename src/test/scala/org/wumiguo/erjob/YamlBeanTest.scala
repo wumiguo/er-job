@@ -40,5 +40,24 @@ class YamlBeanTest extends AnyFlatSpec {
     }
     assert(hasErr, "it must have error")
   }
+
+  it should "fail to load case model" in {
+    val yamlPath = TestDirs.resolveTestResourcePath("sample/yml/sample.yml")
+    val input = new FileInputStream(new File(yamlPath))
+    val yaml = new Yaml(new Constructor(classOf[CaseSampleYml]))
+    var hasErr = false
+    try {
+      val e = yaml.load(input).asInstanceOf[CaseSampleYml]
+      println("data=" + e)
+      assert(false, "this line shouldn't be run as it must have issue on loading a bad yaml")
+    }
+    catch {
+      case e =>
+        hasErr = true
+        println("error=" + e.getMessage)
+    }
+    assert(hasErr, "it must have error")
+
+  }
 }
 
