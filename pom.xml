@@ -14,11 +14,18 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <spark.version>2.3.0</spark.version>
         <snakeyaml.version>1.26</snakeyaml.version>
-<!--        <spark.version>2.3.3</spark.version>-->
+        <!--        <spark.version>2.3.3</spark.version>-->
     </properties>
 
 
     <dependencies>
+        <dependency>
+            <groupId>org.wumiguo</groupId>
+            <artifactId>er-spark_2.11</artifactId>
+            <version>0.1</version>
+            <scope>system</scope>
+            <systemPath>/Users/mac/.ivy2/local/org.wumiguo/er-spark_2.11/0.1/jars/er-spark_2.11.jar</systemPath>
+        </dependency>
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>

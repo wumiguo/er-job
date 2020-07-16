@@ -1,4 +1,7 @@
+
 name := "er-job"
+
+organization := "org.wumiguo"
 
 version := "0.1"
 
@@ -15,6 +18,8 @@ val sparkVersion = "2.3.0"
 
 //unmanagedBase := baseDirectory.value / "custom_lib"
 
+
+libraryDependencies += "org.wumiguo" % "er-spark_2.11" % "0.1"
 
 libraryDependencies += "org.apache.spark" % "spark-core_2.11" % sparkVersion
 
