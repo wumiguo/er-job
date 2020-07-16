@@ -3,7 +3,7 @@ package org.wumiguo.erjob
 import java.io.{File, FileInputStream}
 
 import org.slf4j.LoggerFactory
-import org.wumiguo.erjob.io.ERJobConfiguration
+import org.wumiguo.erjob.io.{ERJobConfiguration, ERJobConfigurationLoader}
 import org.wumiguo.ser.ERFlowLauncher
 import org.wumiguo.ser.common.SparkEnvSetup
 import org.wumiguo.ser.dataloader.{DataTypeResolver, ProfileLoaderFactory}
@@ -22,9 +22,7 @@ object ERJobLauncher extends SparkEnvSetup {
     log.info("start to run er job")
     println("run er job now")
     val yamlPath = "src/main/resources/er-job-configuration.yml"
-    val file = new FileInputStream(new File(yamlPath))
-    val yaml = new Yaml(new Constructor(classOf[ERJobConfiguration]))
-    val erJobConf = yaml.load(file).asInstanceOf[ERJobConfiguration]
+    val erJobConf = ERJobConfigurationLoader.load(yamlPath)
     log.info("job configuration is " + erJobConf)
     val input = erJobConf.getInput
     val output = erJobConf.getOutput
