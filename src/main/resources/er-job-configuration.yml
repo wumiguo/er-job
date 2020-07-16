@@ -4,10 +4,10 @@ input:
 sourcesPairs:
   - sourcePair: ["trade", "product"]
     idFields: ["t_id", "p_id"]
-    joinFields: [ "t_id", "p_id"]
+    joinFields: [ "t_pid", "p_id"]
   - sourcePair: ["trade", "counterparty"]
     idFields: ["t_id", "c_id"]
-    joinFields: [ "t_id", "c_id"]
+    joinFields: [ "t_cptyid", "c_id"]
 output:
   path: /tmp/data-er/
   dataType: csv
