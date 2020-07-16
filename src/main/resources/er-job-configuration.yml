@@ -3,9 +3,7 @@ input:
   dataType: csv
 sourcesPairs:
   - sourcePair: ["trade", "product"]
-    fields: [ "trade_id", "product_id"]
   - sourcePair: ["trade", "counterparty"]
-    fields: [ "trade_id", "ctpy_id"]
 output:
   path: /tmp/data-er/
   dataType: csv
