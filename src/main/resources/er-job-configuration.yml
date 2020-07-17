@@ -9,5 +9,6 @@ sourcesPairs:
     idFields: ["t_id", "c_id"]
     joinFields: [ "t_cptyid", "c_id"]
 output:
-  path: /tmp/data-er/
+  path: data-er-output
+  namedWithSourcePair: true
   dataType: csv

@@ -11,7 +11,7 @@ import scala.collection.mutable
 class ERJobConfiguration {
 
   @BeanProperty var input: Input = new Input()
-  @BeanProperty var output: Input = new Input()
+  @BeanProperty var output: Output = new Output()
   @BeanProperty var sourcesPairs: Array[SourcePair] = Array()
 
   override def toString: String = s"input: $input, output: $output, sourcesPairs: ${sourcesPairs.toList}"

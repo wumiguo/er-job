@@ -1,7 +1,9 @@
 p_id,p_name
-001,FinTechETF
-002,EmergingEnergy
-003,BCTech
-004,SMETF
-005,GSFund
-006,FunStock
+U1001,FinTechETF
+A1002,EmergingEnergy
+U1003,BCTech
+B2004,SMETF
+A1005,GSFund
+U1006,FunStock
+A1007,GOOGF
+G1008,APLF

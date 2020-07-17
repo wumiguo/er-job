@@ -1,0 +1,8 @@
+flows:
+  - name: EDJoin
+    paramMap:
+      algorithm: EDJoin
+      q: 2
+      threshold: 2
+  - name: End2End
+    paramMap:
