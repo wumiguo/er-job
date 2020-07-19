@@ -10,8 +10,8 @@ import scala.beans.BeanProperty
 class Output {
   @BeanProperty var path: String = ""
   @BeanProperty var dataType: String = ""
-  @BeanProperty var namedWithSourcePair: Boolean = false
+  @BeanProperty var overwriteOnExist: Boolean = false
 
-  override def toString: String = s"path: $path, dataType: $dataType, namedWithSourcePair: $namedWithSourcePair "
+  override def toString: String = s"path: $path, dataType: $dataType "
 
 }

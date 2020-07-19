@@ -2,13 +2,21 @@ input:
   path: data-er-input
   dataType: csv
 sourcesPairs:
-  - sourcePair: ["trade", "product"]
+  - name: "Trade&Product ER-Joining"
+    sourcePair: ["trade", "product"]
     idFields: ["t_id", "p_id"]
     joinFields: [ "t_pid", "p_id"]
-  - sourcePair: ["trade", "counterparty"]
+    statePath: tp_stat.txt
+    forcedRun: true
+    joinResultFile: trade-product/tp-mapping
+  - name: "Trade&CounterParty ER-Joining"
+    sourcePair: ["trade", "counterparty"]
     idFields: ["t_id", "c_id"]
     joinFields: [ "t_cptyid", "c_id"]
+    statePath: tc_stat.txt
+    forcedRun: true
+    joinResultFile: trade-counterparty/tc-mapping
 output:
   path: data-er-output
-  namedWithSourcePair: true
   dataType: csv
+  overwriteOnExist: true

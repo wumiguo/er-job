@@ -8,10 +8,20 @@ import scala.beans.BeanProperty
  *         (Change file header on Settings -> Editor -> File and Code Templates)
  */
 class SourcePair {
+  @BeanProperty var name: String = ""
   @BeanProperty var sourcePair: Array[String] = Array("")
   @BeanProperty var idFields: Array[String] = Array("")
   @BeanProperty var joinFields: Array[String] = Array("")
+  @BeanProperty var statePath: String = ""
+  @BeanProperty var forcedRun: Boolean = false
+  @BeanProperty var joinResultFile: String = ""
 
-  override def toString: String = s"sourcePair: ${sourcePair.toList} , joinFields: ${joinFields.toList}, idFields: ${idFields.toList}"
+  override def toString: String = s"name: $name," +
+    s" statePath: $statePath," +
+    s" forcedRun: $forcedRun," +
+    s" joinResultFile: $joinResultFile," +
+    s" sourcePair: ${sourcePair.toList}," +
+    s" joinFields: ${joinFields.toList}, " +
+    s" idFields: ${idFields.toList}"
 
 }
