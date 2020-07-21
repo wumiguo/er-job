@@ -1,7 +1,6 @@
-package org.wumiguo.erjob.io
+package org.wumiguo.erjob.io.configuration
 
 import scala.beans.BeanProperty
-import scala.collection.mutable
 
 /**
  * @author levinliu
@@ -13,6 +12,7 @@ class ERJobConfiguration {
   @BeanProperty var input: Input = new Input()
   @BeanProperty var output: Output = new Output()
   @BeanProperty var sourcesPairs: Array[SourcePair] = Array()
+  @BeanProperty var useFlow: String = ""
 
-  override def toString: String = s"input: $input, output: $output, sourcesPairs: ${sourcesPairs.toList}"
+  override def toString: String = s"input: $input, output: $output, useFlow: $useFlow, sourcesPairs: ${sourcesPairs.toList}"
 }

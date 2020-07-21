@@ -1,0 +1,11 @@
+flows:
+  - name: EDJoinFlow
+    options:
+      - {key: type, value: SSJoin}
+      - {key: algorithm, value: EDJoin}
+      - {key: q, value: 2}
+      - {key: threshold, value: 1}
+  - name: End2EndFlow
+    options:
+      - {key: threshold, value: 0.6}
+      - {key: type, value: End2End}

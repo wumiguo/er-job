@@ -20,3 +20,4 @@ output:
   path: data-er-output
   dataType: csv
   overwriteOnExist: true
+useFlow: EDJoinFlow

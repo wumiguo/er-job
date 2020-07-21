@@ -3,7 +3,8 @@ package org.wumiguo.erjob
 import java.io.File
 
 import org.apache.spark.sql.SaveMode
-import org.wumiguo.erjob.io.{ERJobConfigurationLoader, Input, Output, SourcePair}
+import org.wumiguo.erjob.io.configuration.{FlowSetting, Input, Output, SourcePair}
+import org.wumiguo.erjob.io.{ERJobConfigurationLoader, FlowsConfigurationLoader, Input, Output, SourcePair}
 import org.wumiguo.erjob.mappinghandler.MappingJoinHandler
 import org.wumiguo.ser.ERFlowLauncher
 import org.wumiguo.ser.common.SparkEnvSetup
@@ -32,6 +33,11 @@ object ERJobLauncher extends SparkEnvSetup {
     }
     val spark = createLocalSparkSession(getClass.getName, outputDir = output.path)
     var statPathArr = Array[String]()
+    val flowConfPath = "src/main/resources/flows-configuration.yml"
+    val flowsConf = FlowsConfigurationLoader.load(flowConfPath)
+    log.info("flowsConf=" + flowsConf)
+    log.info("getUseFlow=" + erJobConf.getUseFlow)
+    val flowSetting = flowsConf.lookupFlow(erJobConf.getUseFlow)
     for (sp <- sourcePairs) {
       val statePath = output.path + "/" + sp.statePath
       statPathArr +:= statePath
@@ -55,7 +61,7 @@ object ERJobLauncher extends SparkEnvSetup {
             if (!new File(epPath1).exists || !new File(epPath2).exists) {
               throw new RuntimeException("Fail to resolve the data source from path " + epPath1 + " and " + epPath2)
             }
-            callERFlowLauncher(input, output, sp, epPath1, epPath2)
+            callERFlowLauncher(input, output, sp, epPath1, epPath2, flowSetting)
             import spark.implicits._
             val statRdd = spark.sparkContext.makeRDD(Seq("SUCCESS", output.path + "/" + sp.joinResultFile + "-" + output.dataType), 4)
             statRdd.toDF.write.mode(SaveMode.Overwrite).text(statePath)
@@ -71,7 +77,7 @@ object ERJobLauncher extends SparkEnvSetup {
         if (!new File(epPath1).exists || !new File(epPath2).exists) {
           throw new RuntimeException("Fail to resolve the data source from path " + epPath1 + " and " + epPath2)
         }
-        callERFlowLauncher(input, output, sp, epPath1, epPath2)
+        callERFlowLauncher(input, output, sp, epPath1, epPath2, flowSetting)
         import spark.implicits._
         val statRdd = spark.sparkContext.makeRDD(Seq("SUCCESS", output.path + "/" + sp.joinResultFile + "-" + output.dataType), 4)
         statRdd.toDF.write.mode(SaveMode.Overwrite).text(statePath)
@@ -86,9 +92,9 @@ object ERJobLauncher extends SparkEnvSetup {
     //    callERFlowLauncher(Input(),Output(),,mapping1Path,mapping2Path)
   }
 
-  private def callERFlowLauncher(input: Input, output: Output, sp: SourcePair, epPath1: String, epPath2: String) = {
+  private def callERFlowLauncher(input: Input, output: Output, sp: SourcePair, epPath1: String, epPath2: String, flowSetting: FlowSetting) = {
     var flowArgs = Array[String]()
-    flowArgs +:= "flowType=SSJoin"
+    flowArgs +:= "flowType=" + flowSetting.getOptionValue("type")
     flowArgs +:= "dataSet1=" + epPath1
     flowArgs +:= "dataSet1-id=" + sp.idFields(0)
     flowArgs +:= "dataSet1-format=" + input.getDataType
@@ -97,14 +103,19 @@ object ERJobLauncher extends SparkEnvSetup {
     flowArgs +:= "dataSet2-id=" + sp.idFields(1)
     flowArgs +:= "dataSet2-format=" + input.getDataType
     flowArgs +:= "dataSet2-attrSet=" + sp.joinFields(1)
-    flowArgs +:= "q=2"
-    flowArgs +:= "threshold=1"
-    //set to 0 to make it exactly match
-    flowArgs +:= "algorithm=EDJoin"
+    flowArgs +:= "optionSize=" + flowSetting.options.size
+    flowSetting.options.zipWithIndex.foreach(
+      x => flowArgs +:= "option" + x._2 + "=" + x._1.key + ":" + x._1.value
+    )
+    //    flowArgs +:= "q=2"
+    //    flowArgs +:= "threshold=1"
+    //    //set to 0 to make it exactly match
+    //    flowArgs +:= "algorithm=EDJoin"
     flowArgs +:= "outputPath=" + output.getPath
     flowArgs +:= "outputType=" + output.getDataType
     flowArgs +:= "joinResultFile=" + sp.joinResultFile
     flowArgs +:= "overwriteOnExist=" + output.getOverwriteOnExist
+    log.info("flowArgs=" + flowArgs.toList)
     ERFlowLauncher.main(flowArgs)
   }
 }
