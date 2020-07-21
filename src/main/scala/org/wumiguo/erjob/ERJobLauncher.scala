@@ -4,7 +4,7 @@ import java.io.File
 
 import org.apache.spark.sql.SaveMode
 import org.wumiguo.erjob.io.configuration.{FlowSetting, Input, Output, SourcePair}
-import org.wumiguo.erjob.io.{ERJobConfigurationLoader, FlowsConfigurationLoader, Input, Output, SourcePair}
+import org.wumiguo.erjob.io.{ERJobConfigurationLoader, FlowsConfigurationLoader}
 import org.wumiguo.erjob.mappinghandler.MappingJoinHandler
 import org.wumiguo.ser.ERFlowLauncher
 import org.wumiguo.ser.common.SparkEnvSetup
@@ -37,7 +37,7 @@ object ERJobLauncher extends SparkEnvSetup {
     val flowsConf = FlowsConfigurationLoader.load(flowConfPath)
     log.info("flowsConf=" + flowsConf)
     log.info("getUseFlow=" + erJobConf.getUseFlow)
-    val flowSetting = flowsConf.lookupFlow(erJobConf.getUseFlow)
+    val flowSetting = flowsConf.lookupFlow(erJobConf.getUseFlow).get
     for (sp <- sourcePairs) {
       val statePath = output.path + "/" + sp.statePath
       statPathArr +:= statePath

@@ -8,8 +8,8 @@ import scala.beans.BeanProperty
  *         (Change file header on Settings -> Editor -> File and Code Templates)
  */
 class FlowsConfiguration {
-  def lookupFlow(flow: String): FlowSetting = {
-    getFlows.filter(_.name == flow).head
+  def lookupFlow(flow: String): Option[FlowSetting] = {
+    getFlows.filter(_.name == flow).headOption
   }
 
   @BeanProperty var flows: Array[FlowSetting] = Array()

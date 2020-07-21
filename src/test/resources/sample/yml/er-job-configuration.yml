@@ -2,12 +2,15 @@ input:
   path: data-er-input
   dataType: csv
 sourcesPairs:
-  - sourcePair: ["trade", "product"]
+  - name: "Test Join"
+    sourcePair: ["trade", "product"]
     idFields: ["t_id", "p_id"]
-    joinFields: [ "t_id", "p_id"]
-  - sourcePair: ["trade", "counterparty"]
-    idFields: ["t_id", "c_id"]
-    joinFields: [ "t_id", "c_id"]
+    joinFields: [ "t_pid", "p_id"]
+    statePath: tp_stat.txt
+    forcedRun: true
+    joinResultFile: trade-product/tp-mapping
 output:
   path: /tmp/data-er/
   dataType: csv
+  overwriteOnExist: true
+useFlow: SampleFLow

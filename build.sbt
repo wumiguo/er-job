@@ -7,6 +7,8 @@ version := "0.1"
 
 scalaVersion := "2.11.7"
 
+val scalaTestVersion = "3.1.2"
+
 initialize := {
   val _ = initialize.value // run the previous initialization
   val required = "1.8"
@@ -52,8 +54,8 @@ libraryDependencies += "org.jgrapht" % "jgrapht-core" % "0.9.0"//% "1.0.1"
 libraryDependencies += "org.json" % "json" % "20170516"
 
 //https://www.scalatest.org
-libraryDependencies += "org.scalactic" %% "scalactic" % "2.2.5"
+libraryDependencies += "org.scalactic" %% "scalactic" % scalaTestVersion
 
-libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.5" % "test"
+libraryDependencies += "org.scalatest" %% "scalatest" % scalaTestVersion % "test"
 
 //mainClass in Compile := Some("Experiments.Main")
