@@ -77,8 +77,8 @@ hs_err_pid*
 ### Scala template
 *.class
 *.log
+/*.log.*
 
 /project/target/
 /target/
 
-ACMlog.txt

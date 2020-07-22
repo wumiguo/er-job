@@ -5,7 +5,6 @@ import java.io.File
 import org.apache.spark.sql.SaveMode
 import org.wumiguo.erjob.io.configuration.{FlowSetting, Input, Output, SourcePair}
 import org.wumiguo.erjob.io.{ERJobConfigurationLoader, FlowsConfigurationLoader}
-import org.wumiguo.erjob.mappinghandler.MappingJoinHandler
 import org.wumiguo.ser.ERFlowLauncher
 import org.wumiguo.ser.common.SparkEnvSetup
 import org.wumiguo.ser.methods.util.CommandLineUtil
@@ -16,16 +15,13 @@ import org.wumiguo.ser.methods.util.CommandLineUtil
  *         Created on 2020/7/15
  *         (Change file header on Settings -> Editor -> File and Code Templates)
  */
-object ERJobLauncher extends SparkEnvSetup {
+object JobLauncher extends SparkEnvSetup {
 
   def main(args: Array[String]): Unit = {
     log.info("start to run er job")
-    println("run er job now")
-    val flowType = CommandLineUtil.getParameter(args, "flowType", "SSJoin")
-
-    val yamlPath = "src/main/resources/er-job-configuration.yml"
-    val erJobConf = ERJobConfigurationLoader.load(yamlPath)
-    log.info("job configuration is " + erJobConf)
+    val jobConfPath = CommandLineUtil.getParameter(args, "jobConfPath", "src/main/resources/er-job-configuration.yml")
+    val erJobConf = ERJobConfigurationLoader.load(jobConfPath)
+    log.info("job configuration is " + erJobConf + " from path " + jobConfPath)
     val input = erJobConf.getInput
     val output = erJobConf.getOutput
     val sourcePairs = erJobConf.getSourcesPairs
@@ -36,10 +32,9 @@ object ERJobLauncher extends SparkEnvSetup {
     }
     val spark = createLocalSparkSession(getClass.getName, outputDir = output.path)
     var statPathArr = Array[String]()
-    val flowConfPath = "src/main/resources/flows-configuration.yml"
+    val flowConfPath = CommandLineUtil.getParameter(args, "flowConfPath", "src/main/resources/flows-configuration.yml")
     val flowsConf = FlowsConfigurationLoader.load(flowConfPath)
-    log.info("flowsConf=" + flowsConf)
-    log.info("getUseFlow=" + erJobConf.getUseFlow)
+    log.info("flowsConf=" + flowsConf + " from path " + flowConfPath)
     val flowSetting = flowsConf.lookupFlow(erJobConf.getUseFlow).get
     for (sp <- sourcePairs) {
       val statePath = output.path + "/" + sp.statePath
@@ -110,10 +105,6 @@ object ERJobLauncher extends SparkEnvSetup {
     flowSetting.options.zipWithIndex.foreach(
       x => flowArgs +:= "option" + x._2 + "=" + x._1.key + ":" + x._1.value
     )
-    //    flowArgs +:= "q=2"
-    //    flowArgs +:= "threshold=1"
-    //    //set to 0 to make it exactly match
-    //    flowArgs +:= "algorithm=EDJoin"
     flowArgs +:= "outputPath=" + output.getPath
     flowArgs +:= "outputType=" + output.getDataType
     flowArgs +:= "joinResultFile=" + sp.joinResultFile
