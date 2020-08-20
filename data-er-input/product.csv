@@ -1,9 +1,9 @@
-p_id,p_name
-PU1001,FinTechETF
-PA1002,EmergingEnergy
-PE1003,BCTech
-PB2004,SMETF
-PA1005,GSFund
-PU1006,FunStock
-PA1007,GOOGF
-PG1008,APLF
+p_id,p_name,type,remark
+PU1001,FinTechETF,fund,"FinTech ETF"
+PA1002,EmergingEnergy,fund,"NEW Financial PRD"
+PE1003,BCTech,fund,"BitCoin IT"
+PB2004,SMETF,fund,"SM"
+PA1005,GSFund,fund,"GS"
+PU1006,FunStock,fund,"FUNNY stock"
+PA1007,GOOGF,fund,"GOOGLE Angel Fund"
+PG1008,APLF,bond,"APPLE Long-term Invest Fund"

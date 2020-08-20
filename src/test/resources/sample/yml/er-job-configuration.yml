@@ -3,11 +3,27 @@ input:
   dataType: csv
 sourcesPairs:
   - name: "Test Join"
+    forcedRun: true
     sourcePair: ["trade", "product"]
     idFields: ["t_id", "p_id"]
-    joinFields: [ "t_pid", "p_id"]
+    joinFields:
+      - source1Field: "t_pid"
+        source2Field: "p_id"
+        weight: 1.0
+    source1Filters:
+      - field: site
+        value: CN
+      - field: t_date
+        value: 20200715
+    source2Filters:
+      - field: type
+        value: fund
     statePath: tp_stat.txt
-    forcedRun: true
+    source1AdditionalExtractFields: ["t_user", "site"]
+    source2AdditionalExtractFields: ["p_name", "remark"]
+    joinResultFile: trade-product/tp-mapping
+  - name: "Trade&CounterParty ER-Joining"
+    forcedRun: false
     joinResultFile: trade-product/tp-mapping
 output:
   path: /tmp/data-er/

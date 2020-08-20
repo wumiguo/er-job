@@ -9,9 +9,13 @@ import scala.beans.BeanProperty
  */
 class SourcePair {
   @BeanProperty var name: String = ""
-  @BeanProperty var sourcePair: Array[String] = Array("")
-  @BeanProperty var idFields: Array[String] = Array("")
-  @BeanProperty var joinFields: Array[String] = Array("")
+  @BeanProperty var sourcePair: Array[String] = Array()
+  @BeanProperty var idFields: Array[String] = Array()
+  @BeanProperty var source1AdditionalExtractFields: Array[String] = Array()
+  @BeanProperty var source2AdditionalExtractFields: Array[String] = Array()
+  @BeanProperty var joinFields: Array[JoinFieldPair] = Array()
+  @BeanProperty var source1Filters: Array[SourceFilterOption] = Array()
+  @BeanProperty var source2Filters: Array[SourceFilterOption] = Array()
   @BeanProperty var statePath: String = ""
   @BeanProperty var forcedRun: Boolean = false
   @BeanProperty var joinResultFile: String = ""

@@ -96,11 +96,12 @@ object JobLauncher extends SparkEnvSetup {
     flowArgs +:= "dataSet1=" + epPath1
     flowArgs +:= "dataSet1-id=" + sp.idFields(0)
     flowArgs +:= "dataSet1-format=" + input.getDataType
-    flowArgs +:= "dataSet1-attrSet=" + sp.joinFields(0)
+    flowArgs +:= "dataSet1-attrSet=" + sp.joinFields(0).source1Field
     flowArgs +:= "dataSet2=" + epPath2
     flowArgs +:= "dataSet2-id=" + sp.idFields(1)
     flowArgs +:= "dataSet2-format=" + input.getDataType
-    flowArgs +:= "dataSet2-attrSet=" + sp.joinFields(1)
+    flowArgs +:= "dataSet2-attrSet=" + sp.joinFields(0).source2Field
+    flowArgs +:= "joinFieldsWeight=" + sp.joinFields(0).weight
     flowArgs +:= "optionSize=" + flowSetting.options.size
     flowSetting.options.zipWithIndex.foreach(
       x => flowArgs +:= "option" + x._2 + "=" + x._1.key + ":" + x._1.value

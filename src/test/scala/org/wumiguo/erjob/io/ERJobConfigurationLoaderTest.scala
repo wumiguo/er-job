@@ -15,7 +15,10 @@ class ERJobConfigurationLoaderTest extends AnyFlatSpec {
     assertResult("csv")(erJobConf.input.dataType)
     assertResult("csv")(erJobConf.output.dataType)
     assertResult("SampleFLow")(erJobConf.useFlow)
-    assertResult(1)(erJobConf.sourcesPairs.size)
+    assertResult(2)(erJobConf.sourcesPairs.size)
     assertResult("Test Join")(erJobConf.sourcesPairs(0).name)
+    assertResult(Array("t_id", "p_id"))(erJobConf.sourcesPairs(0).idFields)
+    assertResult(true)(erJobConf.sourcesPairs(0).forcedRun)
+    assertResult(false)(erJobConf.sourcesPairs(1).forcedRun)
   }
 }
