@@ -12,6 +12,6 @@ class Output {
   @BeanProperty var dataType: String = ""
   @BeanProperty var overwriteOnExist: Boolean = false
 
-  override def toString: String = s"path: $path, dataType: $dataType "
+  override def toString: String = s"Output(path: $path, dataType: $dataType)"
 
 }

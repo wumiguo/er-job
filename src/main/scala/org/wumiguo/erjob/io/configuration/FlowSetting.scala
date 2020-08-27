@@ -15,6 +15,6 @@ class FlowSetting {
   @BeanProperty var name: String = ""
   @BeanProperty var options: Array[FlowSettingOption] = Array()
 
-  override def toString: String = s"FlowSetting{ name: $name options: ${options.toList} }"
+  override def toString: String = s"FlowSetting(name: $name options: ${options.toList})"
 
 }

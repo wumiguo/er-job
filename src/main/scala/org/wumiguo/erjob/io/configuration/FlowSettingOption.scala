@@ -18,6 +18,6 @@ class FlowSettingOption {
   @BeanProperty var key: String = ""
   @BeanProperty var value: Any = Nil
 
-  override def toString: String = s"key: $key value: $value "
+  override def toString: String = s"FlowSettingOption(key: $key value: $value)"
 
 }

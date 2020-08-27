@@ -14,6 +14,6 @@ class FlowsConfiguration {
 
   @BeanProperty var flows: Array[FlowSetting] = Array()
 
-  override def toString: String = s"flows: ${flows.toList}"
+  override def toString: String = s"FlowsConfiguration(flows: ${flows.toList})"
 
 }

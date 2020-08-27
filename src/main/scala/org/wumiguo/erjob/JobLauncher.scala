@@ -2,7 +2,7 @@ package org.wumiguo.erjob
 
 import java.io.File
 
-import org.apache.spark.sql.SaveMode
+import org.apache.spark.sql.{SaveMode, SparkSession}
 import org.wumiguo.erjob.io.configuration.{FlowSetting, Input, Output, SourcePair}
 import org.wumiguo.erjob.io.{ERJobConfigurationLoader, FlowsConfigurationLoader}
 import org.wumiguo.ser.ERFlowLauncher
@@ -38,7 +38,7 @@ object JobLauncher extends SparkEnvSetup {
     val flowSetting = flowsConf.lookupFlow(erJobConf.getUseFlow).get
     for (sp <- sourcePairs) {
       val statePath = output.path + "/" + sp.statePath
-      statPathArr +:= statePath
+      statPathArr :+= statePath
       val conf = spark.sparkContext.hadoopConfiguration
       val fs = org.apache.hadoop.fs.FileSystem.get(conf)
       val exists = fs.exists(new org.apache.hadoop.fs.Path(statePath))
@@ -60,9 +60,7 @@ object JobLauncher extends SparkEnvSetup {
               throw new RuntimeException("Fail to resolve the data source from path " + epPath1 + " and " + epPath2)
             }
             callERFlowLauncher(input, output, sp, epPath1, epPath2, flowSetting)
-            import spark.implicits._
-            val statRdd = spark.sparkContext.makeRDD(Seq("SUCCESS", output.path + "/" + sp.joinResultFile + "-" + output.dataType), 4)
-            statRdd.toDF.write.mode(SaveMode.Overwrite).text(statePath)
+            persistStat(output, spark, sp, statePath)
           } else {
             log.info("skip process on source pair:" + sp)
           }
@@ -76,9 +74,7 @@ object JobLauncher extends SparkEnvSetup {
           throw new RuntimeException("Fail to resolve the data source from path " + epPath1 + " and " + epPath2)
         }
         callERFlowLauncher(input, output, sp, epPath1, epPath2, flowSetting)
-        import spark.implicits._
-        val statRdd = spark.sparkContext.makeRDD(Seq("SUCCESS", output.path + "/" + sp.joinResultFile + "-" + output.dataType), 4)
-        statRdd.toDF.write.mode(SaveMode.Overwrite).text(statePath)
+        persistStat(output, spark, sp, statePath)
       }
     }
     if (statPathArr.size == 0) {
@@ -90,26 +86,36 @@ object JobLauncher extends SparkEnvSetup {
     //    callERFlowLauncher(Input(),Output(),,mapping1Path,mapping2Path)
   }
 
+  private def persistStat(output: Output, spark: SparkSession, sp: SourcePair, statePath: String) = {
+    import spark.implicits._
+    val statRdd = spark.sparkContext.makeRDD(Seq("SUCCESS", output.path + "/" + sp.joinResultFile + "-" + output.dataType), 4)
+    statRdd.toDF.write.mode(SaveMode.Overwrite).text(statePath)
+  }
+
   private def callERFlowLauncher(input: Input, output: Output, sp: SourcePair, epPath1: String, epPath2: String, flowSetting: FlowSetting) = {
     var flowArgs = Array[String]()
-    flowArgs +:= "flowType=" + flowSetting.getOptionValue("type")
-    flowArgs +:= "dataSet1=" + epPath1
-    flowArgs +:= "dataSet1-id=" + sp.idFields(0)
-    flowArgs +:= "dataSet1-format=" + input.getDataType
-    flowArgs +:= "dataSet1-attrSet=" + sp.joinFields(0).source1Field
-    flowArgs +:= "dataSet2=" + epPath2
-    flowArgs +:= "dataSet2-id=" + sp.idFields(1)
-    flowArgs +:= "dataSet2-format=" + input.getDataType
-    flowArgs +:= "dataSet2-attrSet=" + sp.joinFields(0).source2Field
-    flowArgs +:= "joinFieldsWeight=" + sp.joinFields(0).weight
-    flowArgs +:= "optionSize=" + flowSetting.options.size
+    flowArgs :+= "flowType=" + flowSetting.getOptionValue("type")
+    flowArgs :+= "dataSet1=" + epPath1
+    flowArgs :+= "dataSet1-id=" + sp.idFields(0)
+    flowArgs :+= "dataSet1-format=" + input.getDataType
+    flowArgs :+= "dataSet1-attrSet=" + sp.joinFields.map(_.source1Field).reduceLeft(_ + "," + _)
+    flowArgs :+= "dataSet1-filterSize=" + sp.source1Filters.size
+    sp.source1Filters.zipWithIndex.foreach(x => flowArgs :+= "dataSet1-filter" + x._2 + "=" + x._1.field + ":" + x._1.value)
+    flowArgs :+= "dataSet2=" + epPath2
+    flowArgs :+= "dataSet2-id=" + sp.idFields(1)
+    flowArgs :+= "dataSet2-format=" + input.getDataType
+    flowArgs :+= "dataSet2-attrSet=" + sp.joinFields.map(_.source2Field).reduceLeft(_ + "," + _)
+    flowArgs :+= "dataSet2-filterSize=" + sp.source2Filters.size
+    sp.source2Filters.zipWithIndex.foreach(x => flowArgs :+= "dataSet2-filter" + x._2 + "=" + x._1.field + ":" + x._1.value)
+    flowArgs :+= "joinFieldsWeight=" + sp.joinFields.map(_.weight.toString).reduce(_ + "," + _)
+    flowArgs :+= "optionSize=" + flowSetting.options.size
     flowSetting.options.zipWithIndex.foreach(
-      x => flowArgs +:= "option" + x._2 + "=" + x._1.key + ":" + x._1.value
+      x => flowArgs :+= "option" + x._2 + "=" + x._1.key + ":" + x._1.value
     )
-    flowArgs +:= "outputPath=" + output.getPath
-    flowArgs +:= "outputType=" + output.getDataType
-    flowArgs +:= "joinResultFile=" + sp.joinResultFile
-    flowArgs +:= "overwriteOnExist=" + output.getOverwriteOnExist
+    flowArgs :+= "outputPath=" + output.getPath
+    flowArgs :+= "outputType=" + output.getDataType
+    flowArgs :+= "joinResultFile=" + sp.joinResultFile
+    flowArgs :+= "overwriteOnExist=" + output.getOverwriteOnExist
     log.info("flowArgs=" + flowArgs.toList)
     ERFlowLauncher.main(flowArgs)
   }

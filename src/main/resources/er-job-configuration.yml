@@ -9,7 +9,10 @@ sourcesPairs:
     joinFields:
       - source1Field: "t_pid"
         source2Field: "p_id"
-        weight: 1.0
+        weight: 0.9
+      - source1Field: "system"
+        source2Field: "sys"
+        weight: 0.1
     source1Filters:
       - field: site
         value: CN
@@ -31,13 +34,11 @@ sourcesPairs:
         source2Field: "c_id"
         weight: 1.0
     source1Filters:
-      - field: country
-        value: sg
-      - field: t_date
-        value: 20200715
+      - field: site
+        value: CN
     source2Filters:
-      - field: type
-        value: fund
+      - field: region
+        value: APC
     statePath: tc_stat.txt
     joinResultFile: trade-counterparty/tc-mapping
 output:

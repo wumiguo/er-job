@@ -12,4 +12,6 @@ class JoinFieldPair {
   @BeanProperty var source2Field: String = ""
   @BeanProperty var weight: Float = 0
 
+  override def toString: String = s"JoinFieldPair(source1Field: $source1Field, source2Field: $source2Field, w: $weight)"
+
 }

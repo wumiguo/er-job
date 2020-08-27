@@ -10,6 +10,6 @@ import scala.beans.BeanProperty
 class Input {
   @BeanProperty var path: String = ""
   @BeanProperty var dataType: String = ""
-  override def toString: String = s"path: $path, dataType: $dataType"
+  override def toString: String = s"Input(path: $path, dataType: $dataType)"
 
 }

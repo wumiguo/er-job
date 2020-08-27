@@ -20,12 +20,13 @@ class SourcePair {
   @BeanProperty var forcedRun: Boolean = false
   @BeanProperty var joinResultFile: String = ""
 
-  override def toString: String = s"name: $name," +
+  override def toString: String = s"SourcePair(name: $name," +
     s" statePath: $statePath," +
     s" forcedRun: $forcedRun," +
     s" joinResultFile: $joinResultFile," +
     s" sourcePair: ${sourcePair.toList}," +
     s" joinFields: ${joinFields.toList}, " +
-    s" idFields: ${idFields.toList}"
+    s" idFields: ${idFields.toList}" +
+    s")"
 
 }

@@ -1,8 +1,7 @@
 package org.wumiguo.erjob.mappinghandler
 
 import org.apache.spark.sql.SparkSession
-import org.wumiguo.erjob.ERJobLauncher.{log, sparkSession}
-import org.wumiguo.ser.common.SparkEnvSetup
+import org.slf4j.LoggerFactory
 
 /**
  * @author levinliu
@@ -10,7 +9,9 @@ import org.wumiguo.ser.common.SparkEnvSetup
  *         (Change file header on Settings -> Editor -> File and Code Templates)
  */
 object MappingJoinHandler {
-  def join(statPathArr: Array[String], sparkSession:SparkSession) = {
+  val log = LoggerFactory.getLogger(getClass.getName)
+
+  def join(statPathArr: Array[String], sparkSession: SparkSession) = {
     val mapping1 = sparkSession.read.text(statPathArr(0)).rdd
     mapping1.foreach(x => log.info("mapping1=" + x))
     val mapping1Path = mapping1.filter(_ != "SUCCESS").collect()(0).getAs[String](0)
