@@ -112,6 +112,7 @@ object JobLauncher extends SparkEnvSetup {
     flowArgs :+= "outputType=" + output.getDataType
     flowArgs :+= "joinResultFile=" + sp.joinResultFile
     flowArgs :+= "overwriteOnExist=" + output.getOverwriteOnExist
+    flowArgs :+= "showSimilarity=" + output.getShowSimilarity
     log.info("flowArgs=" + flowArgs.toList)
     ERFlowLauncher.main(flowArgs)
   }
