@@ -1,4 +1,4 @@
-package org.wumiguo.erjob.io.configuration
+package org.wumiguo.erjob.io.configuration.flow
 
 import scala.beans.BeanProperty
 

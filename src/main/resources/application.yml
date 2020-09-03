@@ -1,0 +1,7 @@
+spark:
+  - {key: master, value: yarn}
+  - {key: enableHiveSupport, value: true}
+  - {key: deploy.node, value: cluster}
+  - {key: network.timeout, value: 2000}
+  - {key: driver.userClassPathFirst, value: true}
+  - {key: sql.catalogImplementation, value: hive}

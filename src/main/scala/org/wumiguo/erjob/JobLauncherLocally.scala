@@ -3,7 +3,7 @@ package org.wumiguo.erjob
 import java.io.File
 
 import org.apache.spark.sql.{SaveMode, SparkSession}
-import org.wumiguo.erjob.io.configuration.{FlowSetting, Input, Output, SourcePair}
+import org.wumiguo.erjob.io.configuration.{Input, Output, SourcePair}
 import org.wumiguo.erjob.io.{ERJobConfigurationLoader, FlowsConfigurationLoader}
 import org.wumiguo.ser.ERFlowLauncher
 import org.wumiguo.ser.common.SparkEnvSetup
@@ -27,6 +27,6 @@ object JobLauncherLocally extends SparkEnvSetup {
     val erJobConf = ERJobConfigurationLoader.load(jobConfPath)
     val output = erJobConf.getOutput
     val spark = createLocalSparkSession(getClass.getName, outputDir = output.path)
-    JobLauncher.main(args)
+    BaseJobLauncher.main(args)
   }
 }

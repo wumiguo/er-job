@@ -12,12 +12,12 @@ sourcesPairs:
         weight: 1.0
     source1Filters:
       - field: site
-        value: CN
+        values: ["CN"]
       - field: t_date
-        value: 20200715
+        values: ["20200715"]
     source2Filters:
       - field: type
-        value: fund
+        values: ["fund"]
     statePath: tp_stat.txt
     source1AdditionalExtractFields: ["t_user", "site"]
     source2AdditionalExtractFields: ["p_name", "remark"]
@@ -29,4 +29,5 @@ output:
   path: /tmp/data-er/
   dataType: csv
   overwriteOnExist: true
+  showSimilarity: true
 useFlow: SampleFLow

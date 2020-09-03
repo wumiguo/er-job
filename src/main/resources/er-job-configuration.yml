@@ -15,12 +15,12 @@ sourcesPairs:
         weight: 0.1
     source1Filters:
       - field: site
-        value: CN
+        values: ["CN"]
       - field: t_date
-        value: 20200715
+        values: ["20200715"]
     source2Filters:
       - field: type
-        value: fund
+        values: ["fund"]
     statePath: tp_stat.txt
     source1AdditionalExtractFields: ["t_user", "site"]
     source2AdditionalExtractFields: ["p_name", "remark"]
@@ -35,10 +35,10 @@ sourcesPairs:
         weight: 1.0
     source1Filters:
       - field: site
-        value: CN
+        values: ["CN"]
     source2Filters:
       - field: region
-        value: APC
+        values: ["APC"]
     statePath: tc_stat.txt
     joinResultFile: trade-counterparty/tc-mapping
 output:

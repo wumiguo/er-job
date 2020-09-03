@@ -9,7 +9,7 @@ import scala.beans.BeanProperty
  */
 class SourceFilterOption {
   @BeanProperty var field: String = ""
-  @BeanProperty var value: String = ""
+  @BeanProperty var values: Array[String] = Array()
 
-  override def toString: String = s"SourceFilterOption(field: $field, value: $value)"
+  override def toString: String = s"SourceFilterOption(field: $field, values: ${values.toList})"
 }

@@ -1,0 +1,5 @@
+spark:
+  - {key: master, value: yarn}
+
+
+

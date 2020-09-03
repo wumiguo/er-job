@@ -1,0 +1,19 @@
+
+
+spark:
+  - {key: master, value: yarn}
+  - {key: enableHiveSupport, value: true}
+  - {key: deploy.node, value: cluster}
+  - {key: master, value: yarn}
+  - {key: master, value: yarn}
+  - {key: master, value: yarn}
+  - master: yarn
+  - deploy.node: cluster
+  - kryoserializer.buffer.max.mb: 1024
+  - kryoserializer.buffer.mx: 1g
+  - network.timeout: 2000
+  - driver.userClassPathFirst: true
+  - sql.orc.filterPushdown: true
+  - sql.catalogImplementation: hive
+  - hadoop.mapreduce.fileoutputcommiter.algorithm.version: 2
+  - spark.default.parallelism: 4

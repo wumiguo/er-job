@@ -2,7 +2,7 @@ package org.wumiguo.erjob.io
 
 import java.io.{File, FileInputStream}
 
-import org.wumiguo.erjob.io.configuration.FlowsConfiguration
+import org.wumiguo.erjob.io.configuration.flow.FlowsConfiguration
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.constructor.Constructor
 
