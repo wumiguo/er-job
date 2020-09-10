@@ -46,4 +46,4 @@ output:
   dataType: csv
   overwriteOnExist: true
   showSimilarity: true
-useFlow: EDJoinFlow
+useFlow: EDParaJoinFlow

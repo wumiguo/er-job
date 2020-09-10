@@ -27,7 +27,7 @@ object BaseJobLauncher extends SparkEnvSetup {
     val output = erJobConf.getOutput
     val sourcePairs = erJobConf.getSourcesPairs
     var sourceCounter = 0
-    val spark = createSparkSession(getClass.getName)
+    val spark = SparkSession.builder().getOrCreate()
     var statPathArr = Array[String]()
     val flowConfPath = CommandLineUtil.getParameter(args, "flowConfPath", "src/main/resources/flows-configuration.yml")
     val flowsConf = FlowsConfigurationLoader.load(flowConfPath)
