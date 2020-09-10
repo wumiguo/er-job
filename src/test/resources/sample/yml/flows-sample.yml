@@ -1,4 +1,3 @@
-!!org.wumiguo.erjob.io.FlowsConfiguration
 flows:
 - name: EdJoin
   options:

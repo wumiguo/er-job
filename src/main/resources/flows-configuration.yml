@@ -10,6 +10,8 @@ flows:
       - {key: type, value: SSParaJoin}
       - {key: algorithm, value: EDJoin}
       - {key: joinPoolSize, value: 4}
+      - {key: joinMaxDuration, value: 60}
+      - {key: joinMaxDurationUnit, value: sec}
       - {key: q, value: 2}
       - {key: threshold, value: 1}
   - name: End2EndFlow
