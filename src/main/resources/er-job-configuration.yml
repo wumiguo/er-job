@@ -24,7 +24,7 @@ sourcesPairs:
     statePath: tp_stat.txt
     source1AdditionalExtractFields: ["t_user", "site"]
     source2AdditionalExtractFields: ["p_name", "remark"]
-    joinResultFile: trade-product/tp-mapping
+    joinResultFile: trade-product/tp-mapping3
   - name: "Trade&CounterParty ER-Joining"
     forcedRun: true
     sourcePair: ["trade", "counterparty"]
@@ -46,4 +46,4 @@ output:
   dataType: csv
   overwriteOnExist: true
   showSimilarity: true
-useFlow: EDParaJoinFlow
+useFlow: EDJoinFlow

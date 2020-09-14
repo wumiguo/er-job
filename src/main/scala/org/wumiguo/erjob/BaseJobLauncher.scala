@@ -95,13 +95,15 @@ object BaseJobLauncher extends SparkEnvSetup {
     flowArgs :+= "dataSet1=" + epPath1
     flowArgs :+= "dataSet1-id=" + sp.idFields(0)
     flowArgs :+= "dataSet1-format=" + input.getDataType
-    flowArgs :+= "dataSet1-attrSet=" + sp.joinFields.map(_.source1Field).reduceLeft(_ + "," + _)
+    flowArgs :+= "dataSet1-attrSet=" + sp.joinFields.map(_.source1Field).reduce(_ + "," + _)
+    flowArgs :+= "dataSet1-additionalAttrSet=" + sp.source1AdditionalExtractFields.reduce(_ + "," + _)
     flowArgs :+= "dataSet1-filterSize=" + sp.source1Filters.size
     sp.source1Filters.zipWithIndex.foreach(x => flowArgs :+= "dataSet1-filter" + x._2 + "=" + x._1.field + ":" + x._1.values.mkString(","))
     flowArgs :+= "dataSet2=" + epPath2
     flowArgs :+= "dataSet2-id=" + sp.idFields(1)
     flowArgs :+= "dataSet2-format=" + input.getDataType
-    flowArgs :+= "dataSet2-attrSet=" + sp.joinFields.map(_.source2Field).reduceLeft(_ + "," + _)
+    flowArgs :+= "dataSet2-attrSet=" + sp.joinFields.map(_.source2Field).reduce(_ + "," + _)
+    flowArgs :+= "dataSet2-additionalAttrSet=" + sp.source1AdditionalExtractFields.reduce(_ + "," + _)
     flowArgs :+= "dataSet2-filterSize=" + sp.source2Filters.size
     sp.source2Filters.zipWithIndex.foreach(x => flowArgs :+= "dataSet2-filter" + x._2 + "=" + x._1.field + ":" + x._1.values.mkString(","))
     flowArgs :+= "joinFieldsWeight=" + sp.joinFields.map(_.weight.toString).reduce(_ + "," + _)
