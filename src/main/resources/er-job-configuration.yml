@@ -22,8 +22,8 @@ sourcesPairs:
       - field: type
         values: ["fund"]
     statePath: tp_stat.txt
-    source1AdditionalExtractFields: ["t_user", "site"]
-    source2AdditionalExtractFields: ["p_name", "remark"]
+    source1AdditionalExtractFields: ["t_user", "system", "t_pid"]
+    source2AdditionalExtractFields: ["p_name", "sys"]
     joinResultFile: trade-product/tp-mapping3
   - name: "Trade&CounterParty ER-Joining"
     forcedRun: true
