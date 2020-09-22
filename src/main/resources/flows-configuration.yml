@@ -26,6 +26,7 @@ flows:
       - {key: algorithm, value: EDJoin}
       - {key: q, value: 2}
       - {key: threshold, value: 1}
+      - {key: relativeLinkageThreshold, value: 0.001}
   - name: End2EndFlow
     options:
       - {key: threshold, value: 0.6}
