@@ -51,8 +51,8 @@ object BaseJobLauncher extends SparkEnvSetup {
           if (first != "SUCCESS") {
             log.info("start to use ER flow to process data")
             sourceCounter += 1
-            val epPath1 = input.path + "/" + sp.sourcePair(0) + "." + input.getDataType
-            val epPath2 = input.path + "/" + sp.sourcePair(1) + "." + input.getDataType
+            val epPath1 = input.path + "/" + sp.sourcePair(0)
+            val epPath2 = input.path + "/" + sp.sourcePair(1)
             if (!new File(epPath1).exists || !new File(epPath2).exists) {
               throw new RuntimeException("Fail to resolve the data source from path " + epPath1 + " and " + epPath2)
             }
@@ -65,8 +65,8 @@ object BaseJobLauncher extends SparkEnvSetup {
       } else {
         log.info("start to use ER flow to process data")
         sourceCounter += 1
-        val epPath1 = input.path + "/" + sp.sourcePair(0) + "." + input.getDataType
-        val epPath2 = input.path + "/" + sp.sourcePair(1) + "." + input.getDataType
+        val epPath1 = input.path + "/" + sp.sourcePair(0)
+        val epPath2 = input.path + "/" + sp.sourcePair(1)
         if (!new File(epPath1).exists || !new File(epPath2).exists) {
           throw new RuntimeException("Fail to resolve the data source from path " + epPath1 + " and " + epPath2)
         }
@@ -94,7 +94,6 @@ object BaseJobLauncher extends SparkEnvSetup {
     flowArgs :+= "flowType=" + flowSetting.getOptionValue("type")
     flowArgs :+= "dataSet1=" + epPath1
     flowArgs :+= "dataSet1-id=" + sp.idFields(0)
-    flowArgs :+= "dataSet1-format=" + input.getDataType
     flowArgs :+= "dataSet1-attrSet=" + sp.joinFields.map(_.source1Field).reduce(_ + "," + _)
     val addFields1 = if (sp.source1AdditionalExtractFields.isEmpty) {
       ""
@@ -107,7 +106,6 @@ object BaseJobLauncher extends SparkEnvSetup {
     sp.source1Filters.zipWithIndex.foreach(x => flowArgs :+= "dataSet1-filter" + x._2 + "=" + x._1.field + ":" + x._1.values.mkString(","))
     flowArgs :+= "dataSet2=" + epPath2
     flowArgs :+= "dataSet2-id=" + sp.idFields(1)
-    flowArgs :+= "dataSet2-format=" + input.getDataType
     flowArgs :+= "dataSet2-attrSet=" + sp.joinFields.map(_.source2Field).reduce(_ + "," + _)
     val addFields2 = if (sp.source2AdditionalExtractFields.isEmpty) {
       ""

@@ -1,10 +1,9 @@
 input:
   path: data-er-input
-  dataType: csv
 sourcesPairs:
   - name: "Test Join"
     forcedRun: true
-    sourcePair: ["trade", "product"]
+    sourcePair: ["trade.csv", "product.csv"]
     idFields: ["t_id", "p_id"]
     joinFields:
       - source1Field: "t_pid"
@@ -24,7 +23,12 @@ sourcesPairs:
     joinResultFile: trade-product/tp-mapping
   - name: "Trade&CounterParty ER-Joining"
     forcedRun: false
-    joinResultFile: trade-product/tp-mapping
+    sourcePair: ["trade.csv", "other.parquet"]
+    joinFields:
+      - source1Field: "t_pty_id"
+        source2Field: "party"
+        weight: 1.0
+    joinResultFile: trade-other/tpty-mapping
 output:
   path: /tmp/data-er/
   dataType: csv

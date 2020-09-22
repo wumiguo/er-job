@@ -12,7 +12,6 @@ class ERJobConfigurationLoaderTest extends AnyFlatSpec {
   it should "load er job configuration" in {
     val yamlPath = TestDirs.resolveTestResourcePath("sample/yml/er-job-configuration.yml")
     val erJobConf = ERJobConfigurationLoader.load(yamlPath)
-    assertResult("csv")(erJobConf.input.dataType)
     assertResult("csv")(erJobConf.output.dataType)
     assertResult("SampleFLow")(erJobConf.useFlow)
     assertResult(2)(erJobConf.sourcesPairs.size)
