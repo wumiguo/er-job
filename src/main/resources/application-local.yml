@@ -1,0 +1,3 @@
+spark:
+  - {key: master, value: "local[*]"}
+  - {key: enableHiveSupport, value: false}

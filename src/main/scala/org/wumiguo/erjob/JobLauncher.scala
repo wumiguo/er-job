@@ -8,7 +8,7 @@ import org.wumiguo.erjob.io.configuration.flow.FlowSetting
 import org.wumiguo.erjob.io.configuration.{Input, Output, SourcePair}
 import org.wumiguo.erjob.io.{ApplicationConfigurationLoader, ERJobConfigurationLoader, FlowsConfigurationLoader}
 import org.wumiguo.ser.ERFlowLauncher
-import org.wumiguo.ser.common.SparkEnvSetup
+import org.wumiguo.ser.common.{SparkAppConfigurationSupport, SparkEnvSetup}
 import org.wumiguo.ser.methods.util.CommandLineUtil
 
 
@@ -23,7 +23,8 @@ object JobLauncher extends SparkEnvSetup {
     val appConfPath = CommandLineUtil.getParameter(args, "appConfig", "src/main/resources/application.yml")
     val sparkConf = ApplicationConfigurationLoader.loadSparkConf(appConfPath)
     log.info("sparkConf=" + sparkConf)
-    val spark = createSparkSession(getClass.getName, appConf = sparkConf)
-    BaseJobLauncher.main(args)
+    val appSettingArgs = SparkAppConfigurationSupport.sparkConf2Args(sparkConf)
+    val argsWithAppSetting = args ++ appSettingArgs
+    BaseJobLauncher.main(argsWithAppSetting)
   }
 }

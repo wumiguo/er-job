@@ -7,7 +7,7 @@ import org.wumiguo.erjob.io.configuration.flow.FlowSetting
 import org.wumiguo.erjob.io.configuration.{Input, Output, SourcePair}
 import org.wumiguo.erjob.io.{ERJobConfigurationLoader, FlowsConfigurationLoader}
 import org.wumiguo.ser.ERFlowLauncher
-import org.wumiguo.ser.common.SparkEnvSetup
+import org.wumiguo.ser.common.{SparkAppConfiguration, SparkAppConfigurationSupport, SparkEnvSetup}
 import org.wumiguo.ser.methods.util.CommandLineUtil
 
 
@@ -27,7 +27,8 @@ object BaseJobLauncher extends SparkEnvSetup {
     val output = erJobConf.getOutput
     val sourcePairs = erJobConf.getSourcesPairs
     var sourceCounter = 0
-    val spark = SparkSession.builder().getOrCreate()
+    val sparkConf = SparkAppConfigurationSupport.args2SparkConf(args)
+    val spark = createSparkSession("base-job-launcher", appConf = sparkConf)
     var statPathArr = Array[String]()
     val flowConfPath = CommandLineUtil.getParameter(args, "flowConfPath", "src/main/resources/flows-configuration.yml")
     val flowsConf = FlowsConfigurationLoader.load(flowConfPath)
@@ -56,7 +57,7 @@ object BaseJobLauncher extends SparkEnvSetup {
             if (!new File(epPath1).exists || !new File(epPath2).exists) {
               throw new RuntimeException("Fail to resolve the data source from path " + epPath1 + " and " + epPath2)
             }
-            callERFlowLauncher(input, output, sp, epPath1, epPath2, flowSetting)
+            callERFlowLauncher(sparkConf, input, output, sp, epPath1, epPath2, flowSetting)
             persistStat(output, spark, sp, statePath)
           } else {
             log.info("skip process on source pair:" + sp)
@@ -70,7 +71,7 @@ object BaseJobLauncher extends SparkEnvSetup {
         if (!new File(epPath1).exists || !new File(epPath2).exists) {
           throw new RuntimeException("Fail to resolve the data source from path " + epPath1 + " and " + epPath2)
         }
-        callERFlowLauncher(input, output, sp, epPath1, epPath2, flowSetting)
+        callERFlowLauncher(sparkConf, input, output, sp, epPath1, epPath2, flowSetting)
         persistStat(output, spark, sp, statePath)
       }
     }
@@ -89,8 +90,9 @@ object BaseJobLauncher extends SparkEnvSetup {
     statRdd.toDF.write.mode(SaveMode.Overwrite).text(statePath)
   }
 
-  private def callERFlowLauncher(input: Input, output: Output, sp: SourcePair, epPath1: String, epPath2: String, flowSetting: FlowSetting) = {
+  private def callERFlowLauncher(sparkConf: SparkAppConfiguration, input: Input, output: Output, sp: SourcePair, epPath1: String, epPath2: String, flowSetting: FlowSetting) = {
     var flowArgs = Array[String]()
+    flowArgs ++= SparkAppConfigurationSupport.sparkConf2Args(sparkConf)
     flowArgs :+= "flowType=" + flowSetting.getOptionValue("type")
     flowArgs :+= "dataSet1=" + epPath1
     flowArgs :+= "dataSet1-id=" + sp.idFields(0)

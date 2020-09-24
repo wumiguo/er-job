@@ -4,9 +4,9 @@ import java.io.File
 
 import org.apache.spark.sql.{SaveMode, SparkSession}
 import org.wumiguo.erjob.io.configuration.{Input, Output, SourcePair}
-import org.wumiguo.erjob.io.{ERJobConfigurationLoader, FlowsConfigurationLoader}
+import org.wumiguo.erjob.io.{ApplicationConfigurationLoader, ERJobConfigurationLoader, FlowsConfigurationLoader}
 import org.wumiguo.ser.ERFlowLauncher
-import org.wumiguo.ser.common.SparkEnvSetup
+import org.wumiguo.ser.common.{SparkAppConfigurationSupport, SparkEnvSetup}
 import org.wumiguo.ser.methods.util.CommandLineUtil
 
 
@@ -23,10 +23,13 @@ object JobLauncherLocally extends SparkEnvSetup {
     if (!outputDir.exists()) {
       outputDir.mkdirs()
     }
+    val appConfPath = CommandLineUtil.getParameter(args, "appConfig", "src/main/resources/application-local.yml")
+    val sparkConf = ApplicationConfigurationLoader.loadSparkConf(appConfPath)
     val jobConfPath = CommandLineUtil.getParameter(args, "jobConfPath", "src/main/resources/er-job-configuration.yml")
     val erJobConf = ERJobConfigurationLoader.load(jobConfPath)
     val output = erJobConf.getOutput
-    val spark = createLocalSparkSession(getClass.getName, outputDir = output.path)
-    BaseJobLauncher.main(args)
+    val spark = createSparkSession(getClass.getName, sparkConf)
+    val mergeArgs = args ++ SparkAppConfigurationSupport.sparkConf2Args(sparkConf)
+    BaseJobLauncher.main(mergeArgs)
   }
 }

@@ -2,6 +2,8 @@
 
 ER Job to support on user customer layer to process data with ER algo
 
+## check coverage
+mvn scoverage:check
 
 #
 Error:scalac: Scala compiler JARs not found

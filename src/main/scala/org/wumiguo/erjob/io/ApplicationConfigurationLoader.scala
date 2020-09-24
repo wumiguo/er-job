@@ -26,7 +26,7 @@ object ApplicationConfigurationLoader {
   }
 
   def appConfig2SparkConfig(appConf: ApplicationConfiguration): SparkAppConfiguration = {
-    val sparkAppConf = new SparkAppConfiguration()
+    val sparkAppConf = SparkAppConfiguration()
     sparkAppConf.master = appConf.getSetting("master", "N/A")
     sparkAppConf.enableHiveSupport = appConf.getSetting("enableHiveSupport", "true").toBoolean
     sparkAppConf.options ++= appConf.spark.map(x => Map(x.key -> x.value)).reduce(_ ++ _)
