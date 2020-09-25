@@ -54,8 +54,11 @@ object BaseJobLauncher extends SparkEnvSetup {
             sourceCounter += 1
             val epPath1 = input.path + "/" + sp.sourcePair(0)
             val epPath2 = input.path + "/" + sp.sourcePair(1)
-            if (!new File(epPath1).exists || !new File(epPath2).exists) {
-              throw new RuntimeException("Fail to resolve the data source from path " + epPath1 + " and " + epPath2)
+            if (!fs.exists(new org.apache.hadoop.fs.Path(epPath1))) {
+              throw new RuntimeException("Fail to resolve the data source from path " + epPath1)
+            }
+            if (!fs.exists(new org.apache.hadoop.fs.Path(epPath2))) {
+              throw new RuntimeException("Fail to resolve the data source from path " + epPath2)
             }
             callERFlowLauncher(sparkConf, input, output, sp, epPath1, epPath2, flowSetting)
             persistStat(output, spark, sp, statePath)
@@ -68,8 +71,11 @@ object BaseJobLauncher extends SparkEnvSetup {
         sourceCounter += 1
         val epPath1 = input.path + "/" + sp.sourcePair(0)
         val epPath2 = input.path + "/" + sp.sourcePair(1)
-        if (!new File(epPath1).exists || !new File(epPath2).exists) {
-          throw new RuntimeException("Fail to resolve the data source from path " + epPath1 + " and " + epPath2)
+        if (!fs.exists(new org.apache.hadoop.fs.Path(epPath1))) {
+          throw new RuntimeException("Fail to resolve the data source from path " + epPath1)
+        }
+        if (!fs.exists(new org.apache.hadoop.fs.Path(epPath2))) {
+          throw new RuntimeException("Fail to resolve the data source from path " + epPath2)
         }
         callERFlowLauncher(sparkConf, input, output, sp, epPath1, epPath2, flowSetting)
         persistStat(output, spark, sp, statePath)
