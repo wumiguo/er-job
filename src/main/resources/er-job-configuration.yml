@@ -1,5 +1,5 @@
 input:
-  path: data-er-input
+  path: data-input
 sourcesPairs:
   - name: "Trade&Product ER-Joining"
     forcedRun: true
@@ -41,7 +41,7 @@ sourcesPairs:
     statePath: tc_stat.txt
     joinResultFile: trade-counterparty/tc-mapping
 output:
-  path: data-er-output
+  path: data-output
   dataType: csv
   overwriteOnExist: true
   showSimilarity: true

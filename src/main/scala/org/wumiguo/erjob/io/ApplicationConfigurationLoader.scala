@@ -32,10 +32,4 @@ object ApplicationConfigurationLoader {
     sparkAppConf.options ++= appConf.spark.map(x => Map(x.key -> x.value)).reduce(_ ++ _)
     sparkAppConf
   }
-
-  def main(args: Array[String]): Unit = {
-    val a = load("/Users/mac/Development/learn/er-job/src/main/resources/application.yml")
-    println(a)
-    println(appConfig2SparkConfig(a))
-  }
 }

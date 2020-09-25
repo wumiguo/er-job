@@ -19,13 +19,24 @@
             <fileMode>0744</fileMode>
             <lineEnding>keep</lineEnding>
         </fileSet>
+        <fileSet>
+            <directory>src/main/resources</directory>
+            <outputDirectory>.</outputDirectory>
+            <includes>
+                <include>*.yml</include>
+                <include>*.properties</include>
+            </includes>
+            <fileMode>0644</fileMode>
+            <lineEnding>keep</lineEnding>
+        </fileSet>
+        <fileSet>
+            <directory>data-input</directory>
+            <outputDirectory>sample-input</outputDirectory>
+            <includes>
+                <include>*.csv</include>
+            </includes>
+            <fileMode>0644</fileMode>
+            <lineEnding>keep</lineEnding>
+        </fileSet>
     </fileSets>
-    <dependencySets>
-        <dependencySet>
-            <outputDirectory>/</outputDirectory>
-            <useProjectArtifact>true</useProjectArtifact>
-            <unpack>true</unpack>
-            <scope>runtime</scope>
-        </dependencySet>
-    </dependencySets>
 </assembly>

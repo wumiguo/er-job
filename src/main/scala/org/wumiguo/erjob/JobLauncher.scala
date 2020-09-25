@@ -20,7 +20,7 @@ import org.wumiguo.ser.methods.util.CommandLineUtil
 object JobLauncher extends SparkEnvSetup {
 
   def main(args: Array[String]): Unit = {
-    val appConfPath = CommandLineUtil.getParameter(args, "appConfig", "src/main/resources/application.yml")
+    val appConfPath = CommandLineUtil.getParameter(args, "appConfPath", "src/main/resources/application.yml")
     val sparkConf = ApplicationConfigurationLoader.loadSparkConf(appConfPath)
     log.info("sparkConf=" + sparkConf)
     val appSettingArgs = SparkAppConfigurationSupport.sparkConf2Args(sparkConf)
