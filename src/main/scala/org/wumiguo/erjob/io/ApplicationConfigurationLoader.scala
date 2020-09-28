@@ -2,7 +2,6 @@ package org.wumiguo.erjob.io
 
 import java.io.{File, FileInputStream}
 
-import org.wumiguo.erjob.io.configuration.ERJobConfiguration
 import org.wumiguo.erjob.io.configuration.application.ApplicationConfiguration
 import org.wumiguo.ser.common.SparkAppConfiguration
 import org.yaml.snakeyaml.Yaml

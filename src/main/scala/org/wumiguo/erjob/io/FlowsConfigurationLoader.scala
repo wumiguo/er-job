@@ -6,8 +6,6 @@ import org.wumiguo.erjob.io.configuration.flow.FlowsConfiguration
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.constructor.Constructor
 
-import scala.collection.mutable
-
 /**
  * @author levinliu
  *         Created on 2020/7/16

@@ -1,6 +1,6 @@
 package org.wumiguo.erjob.io
 
-import java.io.{File, FileInputStream, InputStream}
+import java.io.{File, FileInputStream}
 
 import org.wumiguo.erjob.io.configuration.ERJobConfiguration
 import org.yaml.snakeyaml.Yaml
