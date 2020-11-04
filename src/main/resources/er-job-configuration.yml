@@ -45,4 +45,5 @@ output:
   dataType: csv
   overwriteOnExist: true
   showSimilarity: true
+  connectedClustering: false
 useFlow: EDBatchV2JoinFlow

@@ -12,8 +12,10 @@ class Output {
   @BeanProperty var dataType: String = ""
   @BeanProperty var overwriteOnExist: Boolean = false
   @BeanProperty var showSimilarity: Boolean = false
+  @BeanProperty var connectedClustering: Boolean = false
 
   override def toString: String = s"Output(path: $path, dataType: $dataType, " +
-    s"overwriteOnExist: $overwriteOnExist, showSimilarity: $showSimilarity)"
+    s"overwriteOnExist: $overwriteOnExist, showSimilarity: $showSimilarity," +
+    s"connectedClustering: $connectedClustering)"
 
 }
