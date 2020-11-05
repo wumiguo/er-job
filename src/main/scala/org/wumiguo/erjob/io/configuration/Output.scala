@@ -7,7 +7,7 @@ import scala.beans.BeanProperty
  *         Created on 2020/7/15
  *         (Change file header on Settings -> Editor -> File and Code Templates)
  */
-class Output {
+class Output{
   @BeanProperty var path: String = ""
   @BeanProperty var dataType: String = ""
   @BeanProperty var overwriteOnExist: Boolean = false

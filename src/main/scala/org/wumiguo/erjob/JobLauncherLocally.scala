@@ -20,7 +20,7 @@ object JobLauncherLocally extends SparkEnvSetup {
     if (!outputDir.exists()) {
       outputDir.mkdirs()
     }
-    val appConfPath = CommandLineUtil.getParameter(args, "appConfig", "src/main/resources/application-local.yml")
+    val appConfPath = CommandLineUtil.getParameter(args, "appConfPath", "src/main/resources/application-local.yml")
     val sparkConf = ApplicationConfigurationLoader.loadSparkConf(appConfPath)
     val jobConfPath = CommandLineUtil.getParameter(args, "jobConfPath", "src/main/resources/er-job-configuration.yml")
     val erJobConf = ERJobConfigurationLoader.load(jobConfPath)
