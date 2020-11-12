@@ -1,10 +1,9 @@
 input:
   path: data-input
 sourcesPairs:
-  - name: "Trade&Product ER-Joining"
+  - name: "Trade&Product ER-Joining-one source pair - no id"
     forcedRun: true
     sourcePair: ["trade.csv", "product.csv"]
-    idFields: []
     joinFields:
       - source1Field: "t_pid"
         source2Field: "p_id"
@@ -20,7 +19,7 @@ sourcesPairs:
     source2Filters:
       - field: type
         values: ["fund"]
-    statePath: tp_stat2.txt
+    statePath: tp_stat_noid.txt
     source1AdditionalExtractFields: ["t_user", "system", "t_pid"]
     source2AdditionalExtractFields: ["p_id", "p_name", "sys"]
     joinResultFile: trade-product/tp-mapping-no-id
