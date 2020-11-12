@@ -1,0 +1,49 @@
+input:
+  path: data-input
+sourcesPairs:
+  - name: "Trade&Product ER-Joining"
+    forcedRun: true
+    sourcePair: ["trade.csv", "product.csv"]
+    idFields: []
+    joinFields:
+      - source1Field: "t_pid"
+        source2Field: "p_id"
+        weight: 0.9
+      - source1Field: "system"
+        source2Field: "sys"
+        weight: 0.1
+    source1Filters:
+      - field: site
+        values: ["CN"]
+      - field: t_date
+        values: ["20200715"]
+    source2Filters:
+      - field: type
+        values: ["fund"]
+    statePath: tp_stat2.txt
+    source1AdditionalExtractFields: ["t_user", "system", "t_pid"]
+    source2AdditionalExtractFields: ["p_name", "sys"]
+    joinResultFile: trade-product/tp-mapping-no-id
+  - name: "Trade&CounterParty ER-Joining"
+    forcedRun: true
+    sourcePair: ["trade.csv", "counterparty.parq"]
+    idFields: []
+    joinFields:
+      - source1Field: "t_cptyid"
+        source2Field: "c_id"
+        weight: 1.0
+    source1Filters:
+      - field: site
+        values: ["CN"]
+    source2Filters:
+      - field: region
+        values: ["APC"]
+    statePath: tc_stat.txt
+    joinResultFile: trade-counterparty/tc-mapping-no-id
+output:
+  path: data-output
+  dataType: csv
+  overwriteOnExist: true
+  showSimilarity: true
+  connectedClustering: false
+useFlow: EDJoinFlow
