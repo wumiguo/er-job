@@ -102,7 +102,12 @@ object BaseJobLauncher extends SparkEnvSetup {
     flowArgs ++= SparkAppConfigurationSupport.sparkConf2Args(sparkConf)
     flowArgs :+= "flowType=" + flowSetting.getOptionValue("type")
     flowArgs :+= "dataSet1=" + epPath1
-    flowArgs :+= "dataSet1-id=" + sp.idFields(0)
+    val id1 = if (sp.idFields.size >= 1) {
+      sp.idFields(0)
+    } else {
+      ""
+    }
+    flowArgs :+= "dataSet1-id=" + id1
     flowArgs :+= "dataSet1-attrSet=" + sp.joinFields.map(_.source1Field).reduce(_ + "," + _)
     val addFields1 = if (sp.source1AdditionalExtractFields.isEmpty) {
       ""
@@ -114,7 +119,12 @@ object BaseJobLauncher extends SparkEnvSetup {
     flowArgs :+= "dataSet1-filterSize=" + sp.source1Filters.size
     sp.source1Filters.zipWithIndex.foreach(x => flowArgs :+= "dataSet1-filter" + x._2 + "=" + x._1.field + ":" + x._1.values.mkString(","))
     flowArgs :+= "dataSet2=" + epPath2
-    flowArgs :+= "dataSet2-id=" + sp.idFields(1)
+    val id2 = if (sp.idFields.size >= 2) {
+      sp.idFields(1)
+    } else {
+      ""
+    }
+    flowArgs :+= "dataSet2-id=" + id2
     flowArgs :+= "dataSet2-attrSet=" + sp.joinFields.map(_.source2Field).reduce(_ + "," + _)
     val addFields2 = if (sp.source2AdditionalExtractFields.isEmpty) {
       ""

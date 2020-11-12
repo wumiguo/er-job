@@ -20,15 +20,14 @@ object JobLauncherNoIdLocally extends SparkEnvSetup {
     if (!outputDir.exists()) {
       outputDir.mkdirs()
     }
-    val appConfPath = CommandLineUtil.getParameter(args, "appConfPath", "src/main/resources/application-local.yml")
+    val appConfPath = "src/main/resources/application-local.yml"
     val sparkConf = ApplicationConfigurationLoader.loadSparkConf(appConfPath)
-    //val jobConfPath = CommandLineUtil.getParameter(args, "jobConfPath", "src/main/resources/er-job-configuration-one-source-pair-noid.yml")
-    val jobConfPath = CommandLineUtil.getParameter(args, "jobConfPath", "src/main/resources/er-job-configuration-noid.yml")
-    val erJobConf = ERJobConfigurationLoader.load(jobConfPath)
-    val output = erJobConf.getOutput
-    val spark = createSparkSession(getClass.getName, sparkConf)
-    val mergeArgs = args ++ SparkAppConfigurationSupport.sparkConf2Args(sparkConf)
-    log.info("args=" + mergeArgs.toList)
+    val jobConfPath = "src/main/resources/er-job-configuration-one-source-pair-noid.yml"
+    val confArgs = Seq(
+      "appConfPath=" + appConfPath,
+      "jobConfPath=" + jobConfPath
+    )
+    val mergeArgs = args ++ SparkAppConfigurationSupport.sparkConf2Args(sparkConf) ++ confArgs
     BaseJobLauncher.main(mergeArgs)
   }
 }

@@ -22,7 +22,7 @@ sourcesPairs:
         values: ["fund"]
     statePath: tp_stat2.txt
     source1AdditionalExtractFields: ["t_user", "system", "t_pid"]
-    source2AdditionalExtractFields: ["p_name", "sys"]
+    source2AdditionalExtractFields: ["p_id", "p_name", "sys"]
     joinResultFile: trade-product/tp-mapping-no-id
 output:
   path: data-output
