@@ -97,6 +97,14 @@ object BaseJobLauncher extends SparkEnvSetup {
     statRdd.toDF.write.mode(SaveMode.Overwrite).text(statePath)
   }
 
+  private def additionAttrSet2Str(additionalAttrSet: Array[String]) = {
+    if (additionalAttrSet == null || additionalAttrSet.isEmpty) {
+      ""
+    } else {
+      additionalAttrSet.reduce(_ + "," + _)
+    }
+  }
+
   private def callERFlowLauncher(sparkConf: SparkAppConfiguration, input: Input, output: Output, sp: SourcePair, epPath1: String, epPath2: String, flowSetting: FlowSetting) = {
     var flowArgs = Array[String]()
     flowArgs ++= SparkAppConfigurationSupport.sparkConf2Args(sparkConf)
@@ -109,11 +117,7 @@ object BaseJobLauncher extends SparkEnvSetup {
     }
     flowArgs :+= "dataSet1-id=" + id1
     flowArgs :+= "dataSet1-attrSet=" + sp.joinFields.map(_.source1Field).reduce(_ + "," + _)
-    val addFields1 = if (sp.source1AdditionalExtractFields.isEmpty) {
-      ""
-    } else {
-      sp.source1AdditionalExtractFields.reduce(_ + "," + _)
-    }
+    val addFields1 = additionAttrSet2Str(sp.source1AdditionalExtractFields)
     flowArgs :+= "dataSet1-additionalAttrSet=" + addFields1
 
     flowArgs :+= "dataSet1-filterSize=" + sp.source1Filters.size
@@ -126,11 +130,7 @@ object BaseJobLauncher extends SparkEnvSetup {
     }
     flowArgs :+= "dataSet2-id=" + id2
     flowArgs :+= "dataSet2-attrSet=" + sp.joinFields.map(_.source2Field).reduce(_ + "," + _)
-    val addFields2 = if (sp.source2AdditionalExtractFields.isEmpty) {
-      ""
-    } else {
-      sp.source2AdditionalExtractFields.reduce(_ + "," + _)
-    }
+    val addFields2 = additionAttrSet2Str(sp.source2AdditionalExtractFields)
     flowArgs :+= "dataSet2-additionalAttrSet=" + addFields2
     flowArgs :+= "dataSet2-filterSize=" + sp.source2Filters.size
     sp.source2Filters.zipWithIndex.foreach(x => flowArgs :+= "dataSet2-filter" + x._2 + "=" + x._1.field + ":" + x._1.values.mkString(","))
