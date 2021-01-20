@@ -1,8 +1,8 @@
 joinSourcePairs:
   - name: "Test ER-JOIN"
     processedWithFlow: EDSimJoinFlow
-    forcedRerun: true
-    keepRunStatOnPath: data-output/a.txt
+    runEvenRunStatExist: true
+    preserveRunStatOnPath: data-output/a.txt
     firstSource:
       name: "first data source"
       loadDataFromPath: data-input/first.csv

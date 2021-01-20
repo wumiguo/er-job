@@ -16,20 +16,22 @@ class JoinSourcePairsConfigurationLoaderTest extends AnyFlatSpec {
     assertResult(1)(erJobConf.joinSourcePairs.size)
     val joinSourcePair = erJobConf.joinSourcePairs(0)
     assertResult("Test ER-JOIN")(joinSourcePair.name)
+    assertResult(false)(joinSourcePair.disable)
+    assertResult(true)(joinSourcePair.runEvenRunStatExist)
     assertResult("EDSimJoinFlow")(joinSourcePair.processedWithFlow)
-    assertResult("data-output/a.txt")(joinSourcePair.keepRunStatOnPath)
+    assertResult("data-output/a.txt")(joinSourcePair.preserveRunStatOnPath)
     val firstSource = joinSourcePair.firstSource;
     assertResult("first data source")(firstSource.name)
     assertResult("data-input/first.csv")(firstSource.loadDataFromPath)
     assertResult("site")(firstSource.filterOnFields(0).field)
     assertResult(Seq("CN"))(firstSource.filterOnFields(0).values.toSeq)
     assertResult("t_date")(firstSource.filterOnFields(1).field)
-    assertResult(Seq("20210101","20210102"))(firstSource.filterOnFields(1).values.toSeq)
+    assertResult(Seq("20210101", "20210102"))(firstSource.filterOnFields(1).values.toSeq)
     val secondSource = joinSourcePair.secondSource;
     assertResult("second data source")(secondSource.name)
     assertResult("data-input/second.csv")(secondSource.loadDataFromPath)
     assertResult("t_date")(secondSource.filterOnFields(0).field)
-    assertResult(Seq("20210101","20210102"))(secondSource.filterOnFields(0).values.toSeq)
+    assertResult(Seq("20210101", "20210102"))(secondSource.filterOnFields(0).values.toSeq)
     val joinRules = joinSourcePair.joinRules
     assertResult(2)(joinRules.size)
     assertResult("a")(joinRules(0).firstSourceField)
@@ -38,6 +40,11 @@ class JoinSourcePairsConfigurationLoaderTest extends AnyFlatSpec {
     assertResult("a2")(joinRules(1).firstSourceField)
     assertResult("b2")(joinRules(1).secondSourceField)
     assertResult(0.3)(joinRules(1).weight)
+    val joinResult = joinSourcePair.joinResult
+    assertResult(false)(joinResult.connectedClustering)
+    assertResult(true)(joinResult.overwriteOnExist)
+    assertResult(true)(joinResult.showSimilarity)
+    assertResult("data-output/first-second/mapping.csv")(joinResult.savedResultOnPath)
 
   }
 }

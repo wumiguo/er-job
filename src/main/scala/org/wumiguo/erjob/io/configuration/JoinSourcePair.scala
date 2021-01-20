@@ -12,9 +12,10 @@ import scala.beans.BeanProperty
 class JoinSourcePair {
 
   @BeanProperty var name: String = ""
-  @BeanProperty var forcedRerun: Boolean = false
+  @BeanProperty var disable: Boolean = false
+  @BeanProperty var runEvenRunStatExist: Boolean = false
   @BeanProperty var processedWithFlow: String = ""
-  @BeanProperty var keepRunStatOnPath: String = ""
+  @BeanProperty var preserveRunStatOnPath: String = ""
   @BeanProperty var firstSource: FirstSource = new FirstSource()
   @BeanProperty var secondSource: SecondSource = new SecondSource()
   @BeanProperty var joinRules: Array[JoinFieldRules] = Array()
@@ -22,7 +23,9 @@ class JoinSourcePair {
 
   override def toString: String = s"JoinSourcePair(name: $name, " +
     s"processedWithFlow: $processedWithFlow, " +
-    s"keepRunStatOnPath: $keepRunStatOnPath, " +
+    s"disable: $disable, " +
+    s"runEvenRunStatExist: $runEvenRunStatExist, " +
+    s"preserveRunStatOnPath: $preserveRunStatOnPath, " +
     s"firstSource: $firstSource, " +
     s"secondSource: $secondSource, " +
     s"joinRules: ${joinRules.toList}, " +
