@@ -1,0 +1,7 @@
+joinSourcePairs:
+  - name: "Trade&Prodcut ER-JOIN"
+    processedWithFlow: EDSimJoinFlow
+    keepRunStatOnPath: data-output/tp_stat.txt
+    firstSource:
+      - name: "trade data source"
+        loadDataFromPath: trade.csv

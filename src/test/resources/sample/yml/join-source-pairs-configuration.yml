@@ -1,0 +1,24 @@
+joinSourcePairs:
+  - name: "Test ER-JOIN"
+    processedWithFlow: EDSimJoinFlow
+    forcedRerun: true
+    keepRunStatOnPath: data-output/a.txt
+    firstSource:
+      name: "first data source"
+      loadDataFromPath: data-input/first.csv
+      filterOnFields:
+        - {field: site, values: ["CN"]}
+        - {field: t_date, values: ["20210101","20210102"]}
+    secondSource:
+      name: "second data source"
+      loadDataFromPath: data-input/second.csv
+      filterOnFields:
+        - {field: t_date, values: ["20210101","20210102"]}
+    joinRules:
+      - {firstSourceField: a, secondSourceField: b, weight: 0.7}
+      - {firstSourceField: a2, secondSourceField: b2, weight: 0.3}
+    joinResult:
+      savedResultOnPath: data-output/first-second/mapping.csv
+      showSimilarity: true
+      connectedClustering: false
+      overwriteOnExist: true
