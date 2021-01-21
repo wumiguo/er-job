@@ -1,0 +1,40 @@
+joinSourcePairs:
+  - name: "Test Join"
+    processedWithFlow: SampleFLow
+    runEvenRunStatExist: true
+    preserveRunStatOnPath: /tmp/data-er/tp_stat.txt
+    firstSource:
+      loadDataFromPath: data-er-input/trade.csv
+      idField: t_id
+      filterOnFields:
+        - {field: site, values: ["CN"]}
+        - {field: t_date, values: ["20200715"]}
+    secondSource:
+      loadDataFromPath: data-er-input/product.csv
+      idField: p_id
+      filterOnFields:
+        - {field: type, values: ["fund"]}
+    joinRules:
+      - {firstSourceField: t_pid, secondSourceField: p_id, weight: 1.0}
+    joinResult:
+      showFieldFromFirstSource: ["t_user", "site"]
+      showFieldFromSecondSource: ["p_name", "remark"]
+      savedResultOnPath: /tmp/data-er/tp-mapping.csv
+      showSimilarity: true
+      connectedClustering: false
+      overwriteOnExist: true
+  - name: "Trade&CounterParty ER-Joining"
+    processedWithFlow: SampleFLow
+    runEvenRunStatExist: false
+    firstSource:
+      loadDataFromPath: data-er-input/trade.csv
+    secondSource:
+      loadDataFromPath: data-er-input/other.parquet
+    joinRules:
+      - {firstSourceField: t_pty_id, secondSourceField: party, weight: 1.0}
+    joinResult:
+      savedResultOnPath: /tmp/data-er/trade-other/tpty-mapping.csv
+      showSimilarity: true
+      connectedClustering: false
+      overwriteOnExist: true
+

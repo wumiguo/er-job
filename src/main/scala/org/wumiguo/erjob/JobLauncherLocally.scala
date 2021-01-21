@@ -22,12 +22,12 @@ object JobLauncherLocally extends SparkEnvSetup {
     }
     val appConfPath = "src/main/resources/application-local.yml"
     val sparkConf = ApplicationConfigurationLoader.loadSparkConf(appConfPath)
-    val jobConfPath = "src/main/resources/er-job-configuration.yml"
+    val jobConfPath = "src/main/resources/er-job-configuration-v2.yml"
     val confArgs = Seq(
       "appConfPath=" + appConfPath,
       "jobConfPath=" + jobConfPath
     )
     val mergeArgs = args ++ SparkAppConfigurationSupport.sparkConf2Args(sparkConf) ++ confArgs
-    BaseJobLauncher.main(mergeArgs)
+    SimpleJobLauncher.main(mergeArgs)
   }
 }

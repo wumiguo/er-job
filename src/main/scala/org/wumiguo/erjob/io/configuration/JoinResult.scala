@@ -9,12 +9,16 @@ import scala.beans.BeanProperty
  */
 class JoinResult {
   @BeanProperty var savedResultOnPath: String = ""
+  @BeanProperty var showFieldFromFirstSource: Array[String] = Array()
+  @BeanProperty var showFieldFromSecondSource: Array[String] = Array()
   @BeanProperty var showSimilarity: Boolean = false
   @BeanProperty var connectedClustering: Boolean = false
   @BeanProperty var overwriteOnExist: Boolean = false
 
   override def toString: String = s"JoinResult(" +
     s"savedResultOnPath: $savedResultOnPath," +
+    s"showFieldFromFirstSource: $showFieldFromFirstSource," +
+    s"showFieldFromSecondSource: $showFieldFromSecondSource," +
     s"showSimilarity: $showSimilarity," +
     s"overwriteOnExist: $overwriteOnExist," +
     s"connectedClustering:$connectedClustering" +

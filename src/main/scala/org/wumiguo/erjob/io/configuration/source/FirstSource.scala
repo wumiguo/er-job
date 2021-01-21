@@ -11,11 +11,13 @@ import scala.beans.BeanProperty
  */
 class FirstSource {
   @BeanProperty var name: String = ""
+  @BeanProperty var idField: String = ""
   @BeanProperty var loadDataFromPath: String = ""
   @BeanProperty var filterOnFields: Array[SourceFilterOption] = Array()
 
   override def toString: String = s"FirstSource( " +
     s"name: $name, " +
+    s"idField: $idField, " +
     s"loadDataFromPath: $loadDataFromPath, " +
     s"filterOnFields: ${filterOnFields.toList} " +
     s")"

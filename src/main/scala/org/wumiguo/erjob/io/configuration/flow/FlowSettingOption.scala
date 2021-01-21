@@ -8,7 +8,7 @@ import scala.beans.BeanProperty
  *         (Change file header on Settings -> Editor -> File and Code Templates)
  */
 class FlowSettingOption {
-  def option(key: String, value: Any) = {
+  def option(key: String, value: Any):FlowSettingOption = {
     val opt = new FlowSettingOption
     opt.setKey(key)
     opt.setValue(value)

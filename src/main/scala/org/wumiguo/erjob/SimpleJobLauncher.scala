@@ -1,13 +1,14 @@
 package org.wumiguo.erjob
 
+import java.util.Date
 import java.util.concurrent.{Callable, Executors, Future}
 
 import org.apache.hadoop.fs.FileSystem
 import org.apache.spark.sql.{SaveMode, SparkSession}
-import org.wumiguo.erjob.argsparser.{FlowSettingSupport, SourcePairSupport}
-import org.wumiguo.erjob.io.configuration.flow.FlowSetting
-import org.wumiguo.erjob.io.configuration.{Input, Output, SourcePair}
-import org.wumiguo.erjob.io.{ERJobConfigurationLoader, FlowsConfigurationLoader}
+import org.wumiguo.erjob.argsparser.{FlowSettingSupport, JoinSourcePairSupport}
+import org.wumiguo.erjob.io.configuration.JoinSourcePair
+import org.wumiguo.erjob.io.configuration.flow.{FlowSetting, FlowsConfiguration}
+import org.wumiguo.erjob.io.{FlowsConfigurationLoader, JoinSourcePairsConfigurationLoader}
 import org.wumiguo.ser.ERFlowLauncher
 import org.wumiguo.ser.common.{SparkAppConfiguration, SparkAppConfigurationSupport, SparkEnvSetup}
 import org.wumiguo.ser.methods.util.CommandLineUtil
@@ -21,16 +22,14 @@ import scala.collection.mutable
  *         Created on 2020/7/15
  *         (Change file header on Settings -> Editor -> File and Code Templates)
  */
-object BaseJobLauncher extends SparkEnvSetup {
+object SimpleJobLauncher extends SparkEnvSetup {
 
   def main(args: Array[String]): Unit = {
     log.info("start to run er job")
-    val jobConfPath = CommandLineUtil.getParameter(args, "jobConfPath", "src/main/resources/er-job-configuration.yml")
-    val erJobConf = ERJobConfigurationLoader.load(jobConfPath)
+    val jobConfPath = CommandLineUtil.getParameter(args, "jobConfPath", "src/main/resources/er-job-configuration-v2.yml")
+    val erJobConf = JoinSourcePairsConfigurationLoader.load(jobConfPath)
     log.info("job configuration is " + erJobConf + " from path " + jobConfPath)
-    val input = erJobConf.getInput
-    val output = erJobConf.getOutput
-    val sourcePairs = erJobConf.getSourcesPairs
+    val sourcePairs = erJobConf.joinSourcePairs
     var sourceCounter = 0
     val sparkConf = SparkAppConfigurationSupport.args2SparkConf(args)
     val spark = createSparkSession("base-job-launcher", appConf = sparkConf)
@@ -38,14 +37,13 @@ object BaseJobLauncher extends SparkEnvSetup {
     val flowConfPath = CommandLineUtil.getParameter(args, "flowConfPath", "src/main/resources/flows-configuration.yml")
     val flowsConf = FlowsConfigurationLoader.load(flowConfPath)
     log.info("flowsConf=" + flowsConf + " from path " + flowConfPath)
-    val flowSetting = flowsConf.lookupFlow(erJobConf.getUseFlow).get
     val executors = Executors.newFixedThreadPool(sourcePairs.size)
     val taskList = mutable.MutableList[Future[(String, Int)]]()
     for (sp <- sourcePairs) {
       val task = executors.submit(new Callable[(String, Int)] {
         override def call(): (String, Int) = {
           log.info("start to run job basing on source pair " + sp)
-          val result = handleSourcePair(input, output, sparkConf, spark, flowSetting, sp)
+          val result = handleSourcePair(sparkConf, spark, sp, flowsConf)
           log.info("finish job basing on source pair " + sp)
           result
         }
@@ -67,13 +65,19 @@ object BaseJobLauncher extends SparkEnvSetup {
     //    callERFlowLauncher(Input(),Output(),,mapping1Path,mapping2Path)
   }
 
-  private def handleSourcePair(input: Input, output: Output, sparkConf: SparkAppConfiguration, spark: SparkSession, flowSetting: FlowSetting, sp: SourcePair) = {
-    val statePath = output.path + "/" + sp.statePath
+  private def handleSourcePair(sparkConf: SparkAppConfiguration, spark: SparkSession, sp: JoinSourcePair, flowsConf: FlowsConfiguration) = {
+    if (sp.disable) {
+      (Nil, 0)
+    }
+    val flowSetting = flowsConf.lookupFlow(sp.processedWithFlow).get
+    val statePath = sp.preserveRunStatOnPath
     val conf = spark.sparkContext.hadoopConfiguration
     val fs = org.apache.hadoop.fs.FileSystem.get(conf)
     val exists = fs.exists(new org.apache.hadoop.fs.Path(statePath))
     log.info("path " + statePath + " exist " + exists)
-    if (exists && !sp.forcedRun) {
+    val epPath1 = sp.firstSource.loadDataFromPath
+    val epPath2 = sp.secondSource.loadDataFromPath
+    if (exists && !sp.runEvenRunStatExist) {
       val state = spark.sparkContext.textFile(statePath)
       if (state.count() == 0) {
         log.info("error on exist")
@@ -83,9 +87,9 @@ object BaseJobLauncher extends SparkEnvSetup {
         log.info("state content is =" + first)
         if (first != "SUCCESS") {
           log.info("start to use ER flow to process data")
-          preCheckOnSourcePath(input, sp, fs)
-          callERFlowLauncher(sparkConf, input, output, sp, flowSetting)
-          persistStat(output, spark, sp, statePath)
+          preCheckOnDataPath(fs, epPath1, epPath2)
+          callERFlowLauncher(sparkConf, sp, flowSetting)
+          persistStat(spark, sp.joinResult.savedResultOnPath, statePath)
           (statePath, 1)
         } else {
           log.info("skip process on source pair:" + sp)
@@ -94,37 +98,33 @@ object BaseJobLauncher extends SparkEnvSetup {
       }
     } else {
       log.info("start to use ER flow to process data")
-      preCheckOnSourcePath(input, sp, fs)
-      callERFlowLauncher(sparkConf, input, output, sp, flowSetting)
-      persistStat(output, spark, sp, statePath)
+      preCheckOnDataPath(fs, epPath1, epPath2)
+      callERFlowLauncher(sparkConf, sp, flowSetting)
+      persistStat(spark, sp.joinResult.savedResultOnPath, statePath)
       (statePath, 1)
     }
   }
 
-
-  private def preCheckOnSourcePath(input: Input, sp: SourcePair, fs: FileSystem) = {
-    val epPath1 = input.path + "/" + sp.sourcePair(0)
+  private def preCheckOnDataPath(fs: FileSystem, epPath1: String, epPath2: String) = {
     if (!fs.exists(new org.apache.hadoop.fs.Path(epPath1))) {
       throw new RuntimeException("Fail to resolve the data source from path " + epPath1)
     }
-    val epPath2 = input.path + "/" + sp.sourcePair(1)
     if (!fs.exists(new org.apache.hadoop.fs.Path(epPath2))) {
       throw new RuntimeException("Fail to resolve the data source from path " + epPath2)
     }
   }
 
-  private def persistStat(output: Output, spark: SparkSession, sp: SourcePair, statePath: String) = {
+  private def persistStat(spark: SparkSession, savedResultOnPath: String, statePath: String) = {
     import spark.implicits._
-    val statRdd = spark.sparkContext.makeRDD(Seq("SUCCESS", output.path + "/" + sp.joinResultFile + "-" + output.dataType), 4)
+    val statRdd = spark.sparkContext.makeRDD(Seq("SUCCESS", savedResultOnPath, new Date().toString), 4)
     statRdd.toDF.write.mode(SaveMode.Overwrite).text(statePath)
   }
 
-  private def callERFlowLauncher(sparkConf: SparkAppConfiguration, input: Input, output: Output, sp: SourcePair, flowSetting: FlowSetting) = {
-    var flowArgs: Array[String] = SourcePairSupport.conf2Args(input, output, sp)
-    flowArgs ++= SparkAppConfigurationSupport.sparkConf2Args(sparkConf)
+  private def callERFlowLauncher(sparkConf: SparkAppConfiguration, sp: JoinSourcePair, flowSetting: FlowSetting) = {
+    var flowArgs: Array[String] = JoinSourcePairSupport.conf2Args(sp)
     flowArgs ++= FlowSettingSupport.conf2Args(flowSetting)
+    flowArgs ++= SparkAppConfigurationSupport.sparkConf2Args(sparkConf)
     log.info("flowArgs=" + flowArgs.toList)
     ERFlowLauncher.main(flowArgs)
   }
-
 }

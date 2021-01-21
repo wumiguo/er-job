@@ -1,7 +1,28 @@
 joinSourcePairs:
-  - name: "Trade&Prodcut ER-JOIN"
-    processedWithFlow: EDSimJoinFlow
-    keepRunStatOnPath: data-output/tp_stat.txt
+  - name: "Trade&Product ER-Joining"
+    processedWithFlow: EDBatchV2JoinFlow
+    runEvenRunStatExist: true
+    preserveRunStatOnPath: data-output/tp_stat.txt
     firstSource:
-      - name: "trade data source"
-        loadDataFromPath: trade.csv
+      name: "trade data source"
+      loadDataFromPath: data-input/trade.csv
+      idField: t_id
+      filterOnFields:
+        - {field: site, values: ["CN"]}
+        - {field: t_date, values: ["20200715"]}
+    secondSource:
+      name: "product data source"
+      loadDataFromPath: data-input/product.csv
+      idField: p_id
+      filterOnFields:
+        - {field: type, values: ["fund"]}
+    joinRules:
+      - {firstSourceField: t_pid, secondSourceField: p_id, weight: 0.9}
+      - {firstSourceField: system, secondSourceField: sys, weight: 0.1}
+    joinResult:
+      showFieldFromFirstSource: ["t_user", "system", "t_pid"]
+      showFieldFromSecondSource: ["p_name", "sys"]
+      savedResultOnPath: data-output/trade-product/tp-mapping4.csv
+      showSimilarity: true
+      connectedClustering: true
+      overwriteOnExist: true

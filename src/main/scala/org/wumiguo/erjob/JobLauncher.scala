@@ -18,6 +18,6 @@ object JobLauncher extends SparkEnvSetup {
     log.info("sparkConf=" + sparkConf)
     val appSettingArgs = SparkAppConfigurationSupport.sparkConf2Args(sparkConf)
     val argsWithAppSetting = args ++ appSettingArgs
-    BaseJobLauncher.main(argsWithAppSetting)
+    SimpleJobLauncher.main(argsWithAppSetting)
   }
 }
